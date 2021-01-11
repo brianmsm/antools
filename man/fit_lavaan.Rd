@@ -4,7 +4,7 @@
 \alias{fit_lavaan}
 \title{Get the lavaan fit indexes in tidy format}
 \usage{
-fit_lavaan(x, ...)
+fit_lavaan(x)
 }
 \arguments{
 \item{x}{A lavaan object that is estimated by \code{\link[lavaan:cfa]{lavaan::cfa()}} or

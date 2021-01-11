@@ -46,7 +46,7 @@
 #' )
 #'
 #' fit_lavaan(fit)
-fit_lavaan <- function(x, ...) {
+fit_lavaan <- function(x) {
   if (lavaan::lavInspect(x, "options")$estimator == "DWLS") {
     type <- "robust"
   } else {
