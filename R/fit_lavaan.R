@@ -36,22 +36,25 @@
 #'
 #' library(lavaan)
 #'
-#' HS.model <- ' visual  =~ x1 + x2 + x3
+#' HS.model <- " visual  =~ x1 + x2 + x3
 #'               textual =~ x4 + x5 + x6
-#'               speed   =~ x7 + x8 + x9 '
+#'               speed   =~ x7 + x8 + x9 "
 #'
-#' fit <- cfa(model = HS.model,
-#'            data  = HolzingerSwineford1939)
+#' fit <- cfa(
+#'   model = HS.model,
+#'   data = HolzingerSwineford1939
+#' )
 #'
 #' fit_lavaan(fit)
-#'
 fit_lavaan <- function(x, ...) {
-  if(lavaan::lavInspect(x, "options")$estimator == "DWLS") {
-    type = "robust"
-  } else {type = "no_robust"}
+  if (lavaan::lavInspect(x, "options")$estimator == "DWLS") {
+    type <- "robust"
+  } else {
+    type <- "no_robust"
+  }
 
-  if(lavaan::lavInspect(x, "converged")) {
-    if(type == "robust") {
+  if (lavaan::lavInspect(x, "converged")) {
+    if (type == "robust") {
       fit_measure <- x %>%
         lavaan::fitmeasures(
           fit.measures =
@@ -86,10 +89,12 @@ fit_lavaan <- function(x, ...) {
             nobs = sum(lavaan::lavInspect(x, "nobs"))
           )
         ) %>%
-        dplyr::select(nobs, estimator, ngroups, converged, chisq.scaled,
-                      df.scaled, pvalue.scaled, npar, cfi.scaled, tli.scaled,
-                      rmsea.scaled, rmsea.ci.lower.scaled, rmsea.ci.upper.scaled,
-                      srmr, wrmr) %>%
+        dplyr::select(
+          nobs, estimator, ngroups, converged, chisq.scaled,
+          df.scaled, pvalue.scaled, npar, cfi.scaled, tli.scaled,
+          rmsea.scaled, rmsea.ci.lower.scaled, rmsea.ci.upper.scaled,
+          srmr, wrmr
+        ) %>%
         dplyr::rename_with(
           ~ stringr::str_remove(., ".scaled")
         )
@@ -131,17 +136,21 @@ fit_lavaan <- function(x, ...) {
             nobs = sum(lavaan::lavInspect(x, "nobs"))
           )
         ) %>%
-        dplyr::relocate(nobs, estimator, ngroups, converged,
-                        chisq, df, pvalue, npar, cfi, tli, rmsea,
-                        rmsea.ci.lower, rmsea.ci.upper, srmr, wrmr,
-                        aic, bic) %>%
-        dplyr::rename(AIC = aic,
-                      BIC = bic)
+        dplyr::relocate(
+          nobs, estimator, ngroups, converged,
+          chisq, df, pvalue, npar, cfi, tli, rmsea,
+          rmsea.ci.lower, rmsea.ci.upper, srmr, wrmr,
+          aic, bic
+        ) %>%
+        dplyr::rename(
+          AIC = aic,
+          BIC = bic
+        )
     }
   } else {
     fit_measure <- tibble(
       nobs = sum(lavaan::lavInspect(x, "nobs")),
-      estimator =  lavaan_estimator(x),
+      estimator = lavaan_estimator(x),
       ngroups = lavaan::lavInspect(x, "ngroups"),
       converged = lavaan::lavInspect(x, "converged"),
       chisq = NA_real_,
@@ -171,15 +180,15 @@ fit_lavaan <- function(x, ...) {
 # Internal function ------------------------------------------------------------
 
 lavaan_estimator <- function(x) {
-  if(lavaan::lavInspect(x, "options")$estimator == "DWLS") {
-    if(lavaan::lavInspect(x, "options")$se == "robust.sem" &
-       lavaan::lavInspect(x, "options")$test == "satorra.bentler") {
+  if (lavaan::lavInspect(x, "options")$estimator == "DWLS") {
+    if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
+      lavaan::lavInspect(x, "options")$test == "satorra.bentler") {
       estimator <- "WLSM"
     } else if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
-               lavaan::lavInspect(x, "options")$test == "mean.var.adjusted") {
+      lavaan::lavInspect(x, "options")$test == "mean.var.adjusted") {
       estimator <- "WLSMVS"
     } else if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
-               lavaan::lavInspect(x, "options")$test == "scaled.shifted") {
+      lavaan::lavInspect(x, "options")$test == "scaled.shifted") {
       estimator <- "WLSMV"
     } else {
       estimator <- NA_real_
