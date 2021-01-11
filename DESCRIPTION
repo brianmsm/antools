@@ -1,15 +1,15 @@
 Package: antools
-Title: What the Package Does (One Line, Title Case)
+Title: Functions and utilities for analysis in R 
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Brian Norman",
+           family = "Peña-Calero",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+           email = "brianmsm@gmail.com",
+           comment = c(ORCID = "0000-0002-1073-9306"))
+Description: This package contains functions that complement the 
+    outputs of major statistical analyses used in psychology.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
