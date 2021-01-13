@@ -47,11 +47,7 @@
 #'
 #' fit_lavaan(fit)
 fit_lavaan <- function(x) {
-  if (lavaan::lavInspect(x, "options")$estimator == "DWLS") {
-    type <- "robust"
-  } else {
-    type <- "no_robust"
-  }
+  type <- is_robust_estimator_lavaan(x)
 
   if (lavaan::lavInspect(x, "converged")) {
     if (type == "robust") {
@@ -190,12 +186,70 @@ lavaan_estimator <- function(x) {
     } else if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
       lavaan::lavInspect(x, "options")$test == "scaled.shifted") {
       estimator <- "WLSMV"
+    } else if (lavaan::lavInspect(x, "options")$se == "standard" &
+      lavaan::lavInspect(x, "options")$test == "standard") {
+      estimator <- "DWLS"
     } else {
-      estimator <- NA_real_
+      estimator <- "DWLS_variant"
+    }
+  } else if (lavaan::lavInspect(x, "options")$estimator == "ULS") {
+    if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
+        lavaan::lavInspect(x, "options")$test == "satorra.bentler") {
+      estimator <- "ULSM"
+    } else if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
+               lavaan::lavInspect(x, "options")$test == "mean.var.adjusted") {
+      estimator <- "ULSMVS"
+    } else if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
+               lavaan::lavInspect(x, "options")$test == "scaled.shifted") {
+      estimator <- "ULSMV"
+    } else if (lavaan::lavInspect(x, "options")$se == "standard" &
+               lavaan::lavInspect(x, "options")$test == "standard") {
+      estimator <- "ULS"
+    } else {
+      estimator <- "ULS_variant"
+    }
+  } else if (lavaan::lavInspect(x, "options")$estimator == "ML") {
+    if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
+        lavaan::lavInspect(x, "options")$test == "satorra.bentler") {
+      estimator <- "MLM"
+    } else if (lavaan::lavInspect(x, "options")$se == "robust.huber.white" &
+               lavaan::lavInspect(x, "options")$test %in% c("yuan.bentler.mplus",
+                                                            "yuan.bentler")) {
+      estimator <- "MLR"
+    } else if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
+               lavaan::lavInspect(x, "options")$test == "mean.var.adjusted") {
+      estimator <- "MLMVS"
+    } else if (lavaan::lavInspect(x, "options")$se == "robust.sem" &
+               lavaan::lavInspect(x, "options")$test == "scaled.shifted") {
+      estimator <- "MLMV"
+    } else if (lavaan::lavInspect(x, "options")$se == "standard" &
+               lavaan::lavInspect(x, "options")$test == "standard" &
+               unique(lavaan::lavInspect(fit, "options")$information) == "expected") {
+      estimator <- "ML"
+    } else if (lavaan::lavInspect(x, "options")$se == "standard" &
+               lavaan::lavInspect(x, "options")$test == "standard" &
+               unique(lavaan::lavInspect(fit, "options")$information) == "first.order") {
+      estimator <- "MLF"
+    } else {
+      estimator <- "ML_variant"
     }
   } else {
     estimator <- lavaan::lavInspect(x, "options")$estimator
   }
 
   return(estimator)
+}
+
+is_robust_estimator_lavaan <- function(x) {
+  if(lavaan::lavInspect(x, "options")$test %in% c("satorra.bentler",
+                                                  "yuan.bentler",
+                                                  "yuan.bentler.mplus",
+                                                  "mean.var.adjusted",
+                                                  "scaled.shifted")) {
+    type <- "robust"
+  } else {
+    type <- "non-robust"
+  }
+
+  return(type)
 }
