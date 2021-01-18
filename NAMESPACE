@@ -2,4 +2,5 @@
 
 export("%>%")
 export(fit_lavaan)
+export(fit_mirt)
 importFrom(magrittr,"%>%")
