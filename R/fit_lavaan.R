@@ -144,7 +144,7 @@ fit_lavaan <- function(x) {
         )
     }
   } else {
-    fit_measure <- tibble(
+    fit_measure <- tibble::tibble(
       nobs = sum(lavaan::lavInspect(x, "nobs")),
       estimator = lavaan_estimator(x),
       ngroups = lavaan::lavInspect(x, "ngroups"),
@@ -226,11 +226,11 @@ lavaan_estimator <- function(x) {
       estimator <- "MLMV"
     } else if (lavaan::lavInspect(x, "options")$se == "standard" &
       lavaan::lavInspect(x, "options")$test == "standard" &
-      unique(lavaan::lavInspect(fit, "options")$information) == "expected") {
+      unique(lavaan::lavInspect(x, "options")$information) == "expected") {
       estimator <- "ML"
     } else if (lavaan::lavInspect(x, "options")$se == "standard" &
       lavaan::lavInspect(x, "options")$test == "standard" &
-      unique(lavaan::lavInspect(fit, "options")$information) == "first.order") {
+      unique(lavaan::lavInspect(x, "options")$information) == "first.order") {
       estimator <- "MLF"
     } else {
       estimator <- "ML_variant"
