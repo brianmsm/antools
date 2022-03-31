@@ -70,7 +70,6 @@ fit_lavaan <- function(x) {
         ) %>%
         tibble::enframe(name = "term") %>%
         tidyr::pivot_wider(
-          id_cols = term,
           names_from = term,
           values_from = value
         ) %>%
