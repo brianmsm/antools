@@ -9,12 +9,6 @@ fit_mirt(x)
 \arguments{
 \item{x}{}
 }
-\value{
-
-}
 \description{
 Get the mirt fit indexes in tidy format
-}
-\examples{
-
 }
